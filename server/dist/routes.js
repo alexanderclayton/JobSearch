@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "./config.js";
-import { User } from "./models.js";
+import { Job, User } from "./models.js";
 export const router = Router();
 router.get("/", (req, res) => {
     res.send("Hello World");
@@ -38,6 +38,28 @@ router.post("/api/add_user", async (req, res) => {
     }
     catch (error) {
         console.error("Error adding user:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+});
+router.post("/api/add_job", async (req, res) => {
+    try {
+        const { user, title, company, ...optionalFields } = req.body;
+        if (!user || !title || !company) {
+            return res
+                .status(400)
+                .json({ message: "New job must include a user, title, and company" });
+        }
+        const newJob = new Job({
+            user,
+            title,
+            company,
+            ...optionalFields,
+        });
+        const savedJob = await newJob.save();
+        res.status(201).json(savedJob);
+    }
+    catch (error) {
+        console.error("Error adding job:", error);
         res.status(500).json({ message: "Internal server error." });
     }
 });

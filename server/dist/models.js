@@ -20,109 +20,94 @@ const userSchema = new Schema({
     },
 });
 export const User = mongoose.model("User", userSchema);
-// export type TAddress = {
-//   street: string;
-//   city: string;
-//   state: string;
-//   zip: number;
-// };
-// export type TCompany = {
-//   name: string;
-//   address: TAddress;
-//   type: string;
-// };
-// export enum ERate {
-//   Hourly = "hourly",
-//   Annual = "annual",
-// }
-// export type TSalary = {
-//   amount: number;
-//   rate: ERate;
-// };
-// export type TCompensation = {
-//   salary: TSalary;
-//   benefits: string[];
-// };
-// export type TTech = {
-//   tech: string;
-//   qualified: boolean;
-// };
-// export enum ELocation {
-//   Onsite = "onsite",
-//   Remote = "remote",
-//   Hybrid = "hybrid",
-// }
-// export interface IJob extends Document {
-//   user: Types.ObjectId;
-//   title: string;
-//   company: TCompany;
-//   compensation: TCompensation;
-//   hours: string;
-//   tech: TTech[];
-//   location: ELocation;
-// }
-// const jobSchema = new Schema<IJob>({
-//   user: {
-//     type: Schema.Types.ObjectId,
-//     ref: "User",
-//     required: true,
-//   },
-//   title: {
-//     type: String,
-//     required: true,
-//   },
-//   company: {
-//     type: {
-//       name: String,
-//       address: {
-//         street: String,
-//         city: String,
-//         state: String,
-//         zip: Number,
-//       },
-//       type: String,
-//     },
-//     required: true,
-//   },
-//   compensation: {
-//     type: {
-//       salary: {
-//         amount: {
-//           type: Number,
-//           default: 0,
-//         },
-//         rate: {
-//           type: String,
-//           default: "",
-//         },
-//       },
-//       benefits: {
-//         type: [String],
-//         default: [],
-//       },
-//     },
-//     default: {},
-//   },
-//   hours: {
-//     type: String,
-//     default: "",
-//   },
-//   tech: {
-//     type: [
-//       {
-//         tech: String,
-//         qualified: Boolean,
-//       },
-//     ],
-//     default: [],
-//   },
-//   location: {
-//     type: String,
-//     enum: Object.values(ELocation),
-//     default: ELocation.Onsite,
-//   },
-// });
-// export const Job = mongoose.model("Job", jobSchema);
+export var ERate;
+(function (ERate) {
+    ERate["Hourly"] = "hourly";
+    ERate["Annual"] = "annual";
+})(ERate || (ERate = {}));
+export var ELocation;
+(function (ELocation) {
+    ELocation["Onsite"] = "onsite";
+    ELocation["Remote"] = "remote";
+    ELocation["Hybrid"] = "hybrid";
+})(ELocation || (ELocation = {}));
+const jobSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    company: {
+        name: {
+            type: String,
+            required: true,
+        },
+        address: {
+            street: {
+                type: String,
+                default: "",
+            },
+            city: {
+                type: String,
+                default: "",
+            },
+            state: {
+                type: String,
+                default: "",
+            },
+            zip: {
+                type: Number,
+                default: 0,
+            },
+        },
+        type: {
+            type: String,
+            default: "",
+        },
+    },
+    compensation: {
+        salary: {
+            amount: {
+                type: Number,
+                default: 0,
+            },
+            rate: {
+                type: String,
+                default: "",
+            },
+        },
+        benefits: {
+            type: [String],
+            default: [],
+        },
+    },
+    hours: {
+        type: String,
+        default: "",
+    },
+    tech: [
+        {
+            tech: {
+                type: String,
+                default: "",
+            },
+            qualified: {
+                type: Boolean,
+                default: false,
+            },
+        },
+    ],
+    location: {
+        type: String,
+        enum: Object.values(ELocation),
+        default: ELocation.Onsite,
+    },
+});
+export const Job = mongoose.model("Job", jobSchema);
 // export type TFeedback = {
 //   feedback: boolean;
 //   date: Date;
