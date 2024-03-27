@@ -37,15 +37,39 @@ export type TAddress = {
   zip: number;
 };
 
+const addressSchema = new Schema<TAddress>({
+  street: String,
+  city: String,
+  state: String,
+  zip: Number,
+});
+
 export type TCompany = {
   name: string;
   address: TAddress;
-  type: string;
+  companyType: string;
 };
+
+const companySchema = new Schema<TCompany>({
+  name: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: addressSchema,
+    default: { street: "", city: "", state: "", zip: 0 },
+    _id: false,
+  },
+  companyType: {
+    type: String,
+    default: "",
+  },
+});
 
 export enum ERate {
   Hourly = "hourly",
   Annual = "annual",
+  None = "none",
 }
 
 export type TSalary = {
@@ -53,15 +77,45 @@ export type TSalary = {
   rate: ERate;
 };
 
+const salarySchema = new Schema<TSalary>({
+  amount: Number,
+  rate: {
+    type: String,
+    enum: Object.values(ERate),
+  },
+});
+
 export type TCompensation = {
   salary: TSalary;
   benefits: string[];
 };
 
+const compensationSchema = new Schema<TCompensation>({
+  salary: {
+    type: salarySchema,
+    _id: false,
+  },
+  benefits: {
+    type: [String],
+    default: [],
+  },
+});
+
 export type TTech = {
   tech: string;
   qualified: boolean;
 };
+
+const techSchema = new Schema<TTech>({
+  tech: {
+    type: String,
+    default: "",
+  },
+  qualified: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 export enum ELocation {
   Onsite = "onsite",
@@ -90,65 +144,19 @@ const jobSchema = new Schema<IJob>({
     required: true,
   },
   company: {
-    name: {
-      type: String,
-      required: true,
-    },
-    address: {
-      street: {
-        type: String,
-        default: "",
-      },
-      city: {
-        type: String,
-        default: "",
-      },
-      state: {
-        type: String,
-        default: "",
-      },
-      zip: {
-        type: Number,
-        default: 0,
-      },
-    },
-    type: {
-      type: String,
-      default: "",
-    },
+    type: companySchema,
+    _id: false,
   },
   compensation: {
-    salary: {
-      amount: {
-        type: Number,
-        default: 0,
-      },
-      rate: {
-        type: String,
-        default: "",
-      },
-    },
-    benefits: {
-      type: [String],
-      default: [],
-    },
+    type: compensationSchema,
+    default: { salary: { amount: 0, rate: ERate.None }, benefits: [] },
+    _id: false,
   },
   hours: {
     type: String,
     default: "",
   },
-  tech: [
-    {
-      tech: {
-        type: String,
-        default: "",
-      },
-      qualified: {
-        type: Boolean,
-        default: false,
-      },
-    },
-  ],
+  tech: [techSchema],
   location: {
     type: String,
     enum: Object.values(ELocation),

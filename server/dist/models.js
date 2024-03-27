@@ -20,11 +20,60 @@ const userSchema = new Schema({
     },
 });
 export const User = mongoose.model("User", userSchema);
+const addressSchema = new Schema({
+    street: String,
+    city: String,
+    state: String,
+    zip: Number,
+});
+const companySchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: addressSchema,
+        default: { street: "", city: "", state: "", zip: 0 },
+        _id: false,
+    },
+    companyType: {
+        type: String,
+        default: "",
+    },
+});
 export var ERate;
 (function (ERate) {
     ERate["Hourly"] = "hourly";
     ERate["Annual"] = "annual";
+    ERate["None"] = "none";
 })(ERate || (ERate = {}));
+const salarySchema = new Schema({
+    amount: Number,
+    rate: {
+        type: String,
+        enum: Object.values(ERate),
+    },
+});
+const compensationSchema = new Schema({
+    salary: {
+        type: salarySchema,
+        _id: false,
+    },
+    benefits: {
+        type: [String],
+        default: [],
+    },
+});
+const techSchema = new Schema({
+    tech: {
+        type: String,
+        default: "",
+    },
+    qualified: {
+        type: Boolean,
+        default: false,
+    },
+});
 export var ELocation;
 (function (ELocation) {
     ELocation["Onsite"] = "onsite";
@@ -42,65 +91,19 @@ const jobSchema = new Schema({
         required: true,
     },
     company: {
-        name: {
-            type: String,
-            required: true,
-        },
-        address: {
-            street: {
-                type: String,
-                default: "",
-            },
-            city: {
-                type: String,
-                default: "",
-            },
-            state: {
-                type: String,
-                default: "",
-            },
-            zip: {
-                type: Number,
-                default: 0,
-            },
-        },
-        type: {
-            type: String,
-            default: "",
-        },
+        type: companySchema,
+        _id: false,
     },
     compensation: {
-        salary: {
-            amount: {
-                type: Number,
-                default: 0,
-            },
-            rate: {
-                type: String,
-                default: "",
-            },
-        },
-        benefits: {
-            type: [String],
-            default: [],
-        },
+        type: compensationSchema,
+        default: { salary: { amount: 0, rate: ERate.None }, benefits: [] },
+        _id: false,
     },
     hours: {
         type: String,
         default: "",
     },
-    tech: [
-        {
-            tech: {
-                type: String,
-                default: "",
-            },
-            qualified: {
-                type: Boolean,
-                default: false,
-            },
-        },
-    ],
+    tech: [techSchema],
     location: {
         type: String,
         enum: Object.values(ELocation),

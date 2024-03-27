@@ -46,6 +46,7 @@ router.post("/api/add_user", async (req: Request, res: Response) => {
 router.post("/api/add_job", async (req: Request, res: Response) => {
   try {
     const { user, title, company, ...optionalFields } = req.body;
+    console.log("Req.body:", req.body, user, title, company);
     if (!user || !title || !company) {
       return res
         .status(400)
