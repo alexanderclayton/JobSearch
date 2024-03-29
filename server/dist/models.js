@@ -92,6 +92,7 @@ const jobSchema = new Schema({
     },
     company: {
         type: companySchema,
+        required: true,
         _id: false,
     },
     compensation: {
@@ -111,78 +112,66 @@ const jobSchema = new Schema({
     },
 });
 export const Job = mongoose.model("Job", jobSchema);
-// export type TFeedback = {
-//   feedback: boolean;
-//   date: Date;
-//   repName: string;
-//   interview: boolean;
-//   notes: string[];
-// };
-// export enum EFeedbackMethod {
-//   Email = "email",
-//   Phone = "phone",
-//   LinkedIn = "linkedin",
-// }
-// export type TFollowUp = {
-//   date: Date;
-//   method: EFeedbackMethod;
-//   message: string;
-// };
-// export interface IApplication extends Document {
-//   job: Types.ObjectId;
-//   applicationDate: Date;
-//   resume: File | null;
-//   coverLetter: File | null;
-//   feedback: TFeedback[];
-//   followUp: TFollowUp[];
-//   notes: string[];
-// }
-// const applicationSchema = new Schema<IApplication>({
-//   job: {
-//     type: Schema.Types.ObjectId,
-//     ref: "Job",
-//     required: true,
-//   },
-//   applicationDate: {
-//     type: Date,
-//     required: true,
-//   },
-//   resume: {
-//     type: File,
-//     default: null,
-//   },
-//   coverLetter: {
-//     type: File,
-//     default: null,
-//   },
-//   feedback: {
-//     type: [
-//       {
-//         feedback: Boolean,
-//         date: Date,
-//         repName: String,
-//         interview: Boolean,
-//         notes: [String],
-//       },
-//     ],
-//     default: [],
-//   },
-//   followUp: {
-//     type: [
-//       {
-//         date: Date,
-//         method: {
-//           type: String,
-//           enum: Object.values(EFeedbackMethod),
-//         },
-//         message: String,
-//       },
-//     ],
-//     default: [],
-//   },
-//   notes: {
-//     type: [String],
-//     default: [],
-//   },
-// });
-// export const Application = mongoose.model("Application", applicationSchema);
+const feedbackSchema = new Schema({
+    feedback: Boolean,
+    date: Date,
+    repName: String,
+    repRole: {
+        type: String,
+        default: "",
+    },
+    interview: {
+        type: Boolean,
+        default: false,
+    },
+    notes: {
+        type: [String],
+        default: [],
+    },
+});
+export var EFollowUpMethod;
+(function (EFollowUpMethod) {
+    EFollowUpMethod["Email"] = "email";
+    EFollowUpMethod["Phone"] = "phone";
+    EFollowUpMethod["LinkedIn"] = "linkedin";
+})(EFollowUpMethod || (EFollowUpMethod = {}));
+const followUpSchema = new Schema({
+    date: Date,
+    method: {
+        type: String,
+        enum: Object.values(EFollowUpMethod),
+    },
+    message: String,
+});
+const applicationSchema = new Schema({
+    job: {
+        type: Schema.Types.ObjectId,
+        ref: "Job",
+        required: true,
+    },
+    applicationDate: {
+        type: Date,
+        required: true,
+    },
+    resume: {
+        type: Buffer,
+        default: null,
+    },
+    coverLetter: {
+        type: Buffer,
+        default: null,
+    },
+    feedback: {
+        type: [feedbackSchema],
+        default: [],
+    },
+    followUp: {
+        type: [followUpSchema],
+        default: [],
+    },
+    notes: {
+        type: [String],
+        default: [],
+    },
+});
+export const Application = mongoose.model("Application", applicationSchema);

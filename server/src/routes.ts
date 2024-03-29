@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { db } from "./config.js";
-import { Job, User } from "./models.js";
+import { Application, Job, User } from "./models.js";
 
 export const router = Router();
 
@@ -62,6 +62,27 @@ router.post("/api/add_job", async (req: Request, res: Response) => {
     res.status(201).json(savedJob);
   } catch (error: unknown) {
     console.error("Error adding job:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+router.post("/api/add_application", async (req: Request, res: Response) => {
+  try {
+    const { job, applicationDate, ...optionalFields } = req.body;
+    if (!job || !applicationDate) {
+      return res.status(400).json({
+        message: "New application must include job and application date",
+      });
+    }
+    const newApplication = new Application({
+      job,
+      applicationDate,
+      ...optionalFields,
+    });
+    const savedApplication = await newApplication.save();
+    res.status(201).json(savedApplication);
+  } catch (error: unknown) {
+    console.error("Error adding application:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 });
