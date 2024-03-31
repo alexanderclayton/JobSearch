@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { db } from "./config.js";
-import { Application, Job, User } from "./models.js";
+import { Application, IUser, Job, User } from "./models.js";
+import { Types } from "mongoose";
 
 export const router = Router();
 
@@ -68,15 +69,11 @@ router.post("/api/add_job", async (req: Request, res: Response) => {
 
 router.post("/api/add_application", async (req: Request, res: Response) => {
   try {
-    const { userId, job, applicationDate, ...optionalFields } = req.body;
+    const { job, applicationDate, ...optionalFields } = req.body;
     if (!job || !applicationDate) {
       return res.status(400).json({
         message: "New application must include job and application date",
       });
-    } else if (!userId) {
-      return res
-        .status(400)
-        .json({ message: "Document must include a valid userId" });
     }
     const newApplication = new Application({
       job,
@@ -84,17 +81,38 @@ router.post("/api/add_application", async (req: Request, res: Response) => {
       ...optionalFields,
     });
     const savedApplication = await newApplication.save();
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
-      { $push: { applications: savedApplication._id } },
-      { new: true }
-    );
-    if (!updatedUser) {
-      return res.status(400).json({ message: "Unable to update user " });
-    }
-    res.status(201).json({ savedApplication, updatedUser });
+    res.status(201).json(savedApplication);
   } catch (error: unknown) {
     console.error("Error adding application:", error);
     res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+router.put("/api/update_user", async (req: Request, res: Response) => {
+  try {
+    const { _id, name, email, password, applicationId } = req.body;
+    if (!_id) {
+      return res.status(400).json({ message: "No user with that _id found" });
+    }
+    const updateFields: Partial<IUser> & {
+      $push?: { applications: Types.ObjectId };
+    } = {};
+    if (name) updateFields.name = name;
+    if (email) updateFields.email = email;
+    if (password) updateFields.password = password;
+    if (applicationId) updateFields.$push = { applications: applicationId };
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: _id },
+      updateFields,
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(400).json({ message: "Unable to update user" });
+    }
+    res.status(200).json(updatedUser);
+  } catch (error: unknown) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "internal server error" });
   }
 });
