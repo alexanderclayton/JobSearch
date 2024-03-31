@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
-import { IUser, User } from "../models.js";
+import { User } from "../models/index.js";
+import { IUser } from "../types/index.js";
 
 export const addUser = async (req: Request, res: Response) => {
   try {

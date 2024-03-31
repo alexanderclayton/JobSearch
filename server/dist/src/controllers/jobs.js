@@ -1,5 +1,5 @@
-import { Job } from "../models.js";
 import mongoose from "mongoose";
+import { Job } from "../models/index.js";
 export const addJob = async (req, res) => {
     try {
         const { user, title, company, ...optionalFields } = req.body;
