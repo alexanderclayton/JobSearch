@@ -1,24 +1,9 @@
 import { Router } from "express";
-import { db } from "./config.js";
 import { Application, Job, User } from "./models.js";
+import mongoose from "mongoose";
 export const router = Router();
 router.get("/", (req, res) => {
     res.send("Hello World");
-});
-router.post("/hello", async (req, res) => {
-    try {
-        const name = req.body.name;
-        const result = await db.collection("users").findOne({ name: name });
-        if (result) {
-            res.json(result);
-        }
-        else {
-            res.status(404).json({ message: "User not found" });
-        }
-    }
-    catch (error) {
-        console.error("Error:", error);
-    }
 });
 router.post("/api/add_user", async (req, res) => {
     try {
@@ -37,6 +22,10 @@ router.post("/api/add_user", async (req, res) => {
         res.status(201).json(savedUser);
     }
     catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            const errors = Object.values(error.errors).map((err) => err.message);
+            return res.status(400).json({ message: "Validation error:", errors });
+        }
         console.error("Error adding user:", error);
         res.status(500).json({ message: "Internal server error." });
     }
@@ -60,6 +49,10 @@ router.post("/api/add_job", async (req, res) => {
         res.status(201).json(savedJob);
     }
     catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            const errors = Object.values(error.errors).map((err) => err.message);
+            return res.status(400).json({ message: "Validation error:", errors });
+        }
         console.error("Error adding job:", error);
         res.status(500).json({ message: "Internal server error." });
     }
@@ -81,6 +74,10 @@ router.post("/api/add_application", async (req, res) => {
         res.status(201).json(savedApplication);
     }
     catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            const errors = Object.values(error.errors).map((err) => err.message);
+            return res.status(400).json({ message: "Validation error:", errors });
+        }
         console.error("Error adding application:", error);
         res.status(500).json({ message: "Internal server error." });
     }
@@ -100,14 +97,55 @@ router.put("/api/update_user", async (req, res) => {
             updateFields.password = password;
         if (applicationId)
             updateFields.$push = { applications: applicationId };
-        const updatedUser = await User.findOneAndUpdate({ _id: _id }, updateFields, { new: true });
+        const updatedUser = await User.findOneAndUpdate({ _id: _id }, updateFields, { new: true, runValidators: true });
         if (!updatedUser) {
             return res.status(400).json({ message: "Unable to update user" });
         }
         res.status(200).json(updatedUser);
     }
     catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            const errors = Object.values(error.errors).map((err) => err.message);
+            return res.status(400).json({ message: "Validation error:", errors });
+        }
         console.error("Error updating user:", error);
-        res.status(500).json({ message: "internal server error" });
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+router.put("/api/update_job", async (req, res) => {
+    try {
+        const { _id, title, company, compensation, hours, tech, location } = req.body;
+        if (!_id) {
+            return res.status(400).json({ message: "No job with that _id found" });
+        }
+        const updateFields = {};
+        if (title)
+            updateFields.title = title;
+        if (company)
+            updateFields.company = company;
+        if (compensation)
+            updateFields.compensation = compensation;
+        if (hours)
+            updateFields.hours = hours;
+        if (tech)
+            updateFields.tech = tech;
+        if (location)
+            updateFields.location = location;
+        const updatedJob = await Job.findOneAndUpdate({ _id: _id }, updateFields, {
+            new: true,
+            runValidators: true,
+        });
+        if (!updatedJob) {
+            return res.status(400).json({ message: "Unable to update job" });
+        }
+        res.status(200).json(updatedJob);
+    }
+    catch (error) {
+        if (error instanceof mongoose.Error.ValidationError) {
+            const errors = Object.values(error.errors).map((err) => err.message);
+            return res.status(400).json({ message: "Validation error:", errors });
+        }
+        console.error("Error updating job:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });

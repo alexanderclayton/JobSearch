@@ -38,10 +38,22 @@ export type TAddress = {
 };
 
 const addressSchema = new Schema<TAddress>({
-  street: String,
-  city: String,
-  state: String,
-  zip: Number,
+  street: {
+    type: String,
+    default: "",
+  },
+  city: {
+    type: String,
+    default: "",
+  },
+  state: {
+    type: String,
+    default: "",
+  },
+  zip: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export type TCompany = {
@@ -82,6 +94,7 @@ const salarySchema = new Schema<TSalary>({
   rate: {
     type: String,
     enum: Object.values(ERate),
+    default: ERate.None,
   },
 });
 
@@ -157,7 +170,10 @@ const jobSchema = new Schema<IJob>({
     type: String,
     default: "",
   },
-  tech: [techSchema],
+  tech: {
+    type: [techSchema],
+    _id: false,
+  },
   location: {
     type: String,
     enum: Object.values(ELocation),
