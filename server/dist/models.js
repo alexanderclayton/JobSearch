@@ -21,10 +21,22 @@ const userSchema = new Schema({
 });
 export const User = mongoose.model("User", userSchema);
 const addressSchema = new Schema({
-    street: String,
-    city: String,
-    state: String,
-    zip: Number,
+    street: {
+        type: String,
+        default: "",
+    },
+    city: {
+        type: String,
+        default: "",
+    },
+    state: {
+        type: String,
+        default: "",
+    },
+    zip: {
+        type: Number,
+        default: 0,
+    },
 });
 const companySchema = new Schema({
     name: {
@@ -52,6 +64,7 @@ const salarySchema = new Schema({
     rate: {
         type: String,
         enum: Object.values(ERate),
+        default: ERate.None,
     },
 });
 const compensationSchema = new Schema({
@@ -104,7 +117,10 @@ const jobSchema = new Schema({
         type: String,
         default: "",
     },
-    tech: [techSchema],
+    tech: {
+        type: [techSchema],
+        _id: false,
+    },
     location: {
         type: String,
         enum: Object.values(ELocation),
