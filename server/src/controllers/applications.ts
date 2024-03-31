@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { Application } from "../models.js";
+import { Application } from "../models/index.js";
 
 export const addApplication = async (req: Request, res: Response) => {
   try {

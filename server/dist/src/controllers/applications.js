@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Application } from "../models.js";
+import { Application } from "../models/index.js";
 export const addApplication = async (req, res) => {
     try {
         const { job, applicationDate, ...optionalFields } = req.body;
