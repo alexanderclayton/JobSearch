@@ -27,10 +27,9 @@ export const addUser = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
     try {
-        const { _id, name, email, password, applicationId } = req.body;
-        if (!_id) {
-            return res.status(400).json({ message: "No user with that _id found" });
-        }
+        const token = req.user;
+        const userId = token._id;
+        const { name, email, password, applicationId } = req.body;
         const updateFields = {};
         if (name)
             updateFields.name = name;
@@ -40,7 +39,7 @@ export const updateUser = async (req, res) => {
             updateFields.password = password;
         if (applicationId)
             updateFields.$push = { applications: applicationId };
-        const updatedUser = await User.findOneAndUpdate({ _id: _id }, updateFields, { new: true, runValidators: true });
+        const updatedUser = await User.findOneAndUpdate({ _id: userId }, updateFields, { new: true, runValidators: true });
         if (!updatedUser) {
             return res.status(400).json({ message: "Unable to update user" });
         }

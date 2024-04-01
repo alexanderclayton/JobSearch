@@ -31,5 +31,10 @@ export const login = async (req, res) => {
     }
 };
 export const protectedRoute = (req, res) => {
+    console.log(req.user);
+    console.log("type", typeof req.user);
+    const tokenObject = req.user;
+    const userId = tokenObject._id;
+    console.log("UserId:", userId);
     return res.status(200).json(req.user);
 };
