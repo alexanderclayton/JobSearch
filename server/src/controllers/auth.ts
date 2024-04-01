@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { User } from "../models/index.js";
 import { generateToken } from "../utils/index.js";
 import { IRequest } from "../types/auth.js";
+import { JwtPayload } from "jsonwebtoken";
+import { IUser } from "../types/users.js";
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -33,5 +35,10 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const protectedRoute = (req: IRequest, res: Response) => {
+  console.log(req.user);
+  console.log("type", typeof req.user);
+  const tokenObject = req.user as IUser;
+  const userId = tokenObject._id;
+  console.log("UserId:", userId);
   return res.status(200).json(req.user);
 };

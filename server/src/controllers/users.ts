@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
 import { User } from "../models/index.js";
-import { IUser } from "../types/index.js";
+import { IRequest, IUser } from "../types/index.js";
 
 export const addUser = async (req: Request, res: Response) => {
   try {
@@ -28,12 +28,11 @@ export const addUser = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: IRequest, res: Response) => {
   try {
-    const { _id, name, email, password, applicationId } = req.body;
-    if (!_id) {
-      return res.status(400).json({ message: "No user with that _id found" });
-    }
+    const token = req.user as IUser;
+    const userId = token._id;
+    const { name, email, password, applicationId } = req.body;
     const updateFields: Partial<IUser> & {
       $push?: { applications: Types.ObjectId };
     } = {};
@@ -42,7 +41,7 @@ export const updateUser = async (req: Request, res: Response) => {
     if (password) updateFields.password = password;
     if (applicationId) updateFields.$push = { applications: applicationId };
     const updatedUser = await User.findOneAndUpdate(
-      { _id: _id },
+      { _id: userId },
       updateFields,
       { new: true, runValidators: true }
     );
