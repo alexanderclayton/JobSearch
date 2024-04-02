@@ -65,20 +65,20 @@ By default, the server will listen on port 5000. You can modify this in the `ser
 
 The server provides the following endpoints:
 
-..\* `POST /api/auth/login`: User login
-..\* `POST /api/users/add_user`: Create user document in MongoDB
-..\* `PUT /api/users/update_user`: Update user document in MongoDB
-..\* `DELETE /api/users/delete_user`: Delete user document in MongoDB
-..\* `POST /api/jobs/add_job`: Create job document in MongoDB
-..\* `PUT /api/jobs/update_job`: Update job document in MongoDB
-..\* `DELETE /api/jobs/delete_job`: Delete job document in MongoDB
-..\* `GET /api/jobs/`: Retrieve multiple job documents from MongoDB
-..\* `GET /api/jobs/:id`: Retrieve single job document from MongoDB
-..\* `POST /api/applications/add_application`: Create application document in MongoDB
-..\* `PUT /api/applications/add_application`: Update application document in MongoDB
-..\* `DELETE /applications/add_application`: Delete application document in MongoDB
-..\* `GET /api/applications/`: Retrieve multiple application documents from MongoDB
-..\* `GET /api/applications/:id`: Retrieve single application document from MongoDB
+- `POST /api/auth/login`: User login
+- `POST /api/users/add_user`: Create user document in MongoDB
+- `PUT /api/users/update_user`: Update user document in MongoDB
+- `DELETE /api/users/delete_user`: Delete user document in MongoDB
+- `POST /api/jobs/add_job`: Create job document in MongoDB
+- `PUT /api/jobs/update_job`: Update job document in MongoDB
+- `DELETE /api/jobs/delete_job`: Delete job document in MongoDB
+- `GET /api/jobs/`: Retrieve multiple job documents from MongoDB
+- `GET /api/jobs/:id`: Retrieve single job document from MongoDB
+- `POST /api/applications/add_application`: Create application document in MongoDB
+- `PUT /api/applications/add_application`: Update application document in MongoDB
+- `DELETE /applications/add_application`: Delete application document in MongoDB
+- `GET /api/applications/`: Retrieve multiple application documents from MongoDB
+- `GET /api/applications/:id`: Retrieve single application document from MongoDB
 
 For detailed information on each endpoint, refer to the API Documentation (COMING SOON!).
 
