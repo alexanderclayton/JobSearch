@@ -36,7 +36,7 @@ export const updateJob = async (req: Request, res: Response) => {
     const { _id, title, company, compensation, hours, tech, location } =
       req.body;
     if (!_id) {
-      return res.status(400).json({ message: "No job with that _id found" });
+      return res.status(400).json({ message: "No job with that _id found." });
     }
     const updateFields: Partial<IJob> = {};
     if (title) updateFields.title = title;
@@ -50,7 +50,7 @@ export const updateJob = async (req: Request, res: Response) => {
       runValidators: true,
     });
     if (!updatedJob) {
-      return res.status(400).json({ message: "Unable to update job" });
+      return res.status(400).json({ message: "Unable to update job." });
     }
     res.status(200).json(updatedJob);
   } catch (error: unknown) {

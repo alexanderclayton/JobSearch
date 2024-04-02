@@ -10,4 +10,10 @@ applicationsRouter.post(
   applications.addApplication
 );
 
+applicationsRouter.put(
+  "/update_application",
+  authenticateToken,
+  applications.updateApplication
+);
+
 export default applicationsRouter;
