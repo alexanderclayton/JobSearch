@@ -65,3 +65,14 @@ export const updateJob = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+export const deleteJob = async (req, res) => {
+    try {
+        const { _id } = req.body;
+        const deletedJob = await Job.findOneAndDelete({ _id: _id });
+        res.status(200).json({ message: `Deleted job: ${_id}`, deletedJob });
+    }
+    catch (error) {
+        console.error("Error deleting job:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};

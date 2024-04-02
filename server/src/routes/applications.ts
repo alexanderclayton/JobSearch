@@ -16,4 +16,10 @@ applicationsRouter.put(
   applications.updateApplication
 );
 
+applicationsRouter.delete(
+  "/delete_application",
+  authenticateToken,
+  applications.deleteApplication
+);
+
 export default applicationsRouter;

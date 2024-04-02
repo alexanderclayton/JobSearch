@@ -58,7 +58,20 @@ export const updateApplication = async (req, res) => {
             const errors = Object.values(error.errors).map((err) => err.message);
             return res.status(400).json({ message: "Validation error:", errors });
         }
-        console.error("Error adding application:", error);
+        console.error("Error updating application:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
+export const deleteApplication = async (req, res) => {
+    try {
+        const { _id } = req.body;
+        const deletedApplication = await Application.deleteOne({ _id: _id });
+        res
+            .status(200)
+            .json({ message: `Deleted application: ${_id}`, deletedApplication });
+    }
+    catch (error) {
+        console.error("Error deleting application:", error);
         res.status(500).json({ message: "Internal server error." });
     }
 };
