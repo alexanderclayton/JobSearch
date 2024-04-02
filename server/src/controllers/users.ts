@@ -58,3 +58,14 @@ export const updateUser = async (req: IRequest, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.body;
+    const deletedUser = await User.findOneAndDelete({ _id: _id });
+    res.status(200).json({ message: `Deleted user: ${_id}`, deletedUser });
+  } catch (error: unknown) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};

@@ -32,7 +32,7 @@ export const updateJob = async (req, res) => {
     try {
         const { _id, title, company, compensation, hours, tech, location } = req.body;
         if (!_id) {
-            return res.status(400).json({ message: "No job with that _id found" });
+            return res.status(400).json({ message: "No job with that _id found." });
         }
         const updateFields = {};
         if (title)
@@ -52,7 +52,7 @@ export const updateJob = async (req, res) => {
             runValidators: true,
         });
         if (!updatedJob) {
-            return res.status(400).json({ message: "Unable to update job" });
+            return res.status(400).json({ message: "Unable to update job." });
         }
         res.status(200).json(updatedJob);
     }
@@ -63,5 +63,16 @@ export const updateJob = async (req, res) => {
         }
         console.error("Error updating job:", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+};
+export const deleteJob = async (req, res) => {
+    try {
+        const { _id } = req.body;
+        const deletedJob = await Job.findOneAndDelete({ _id: _id });
+        res.status(200).json({ message: `Deleted job: ${_id}`, deletedJob });
+    }
+    catch (error) {
+        console.error("Error deleting job:", error);
+        res.status(500).json({ message: "Internal server error." });
     }
 };

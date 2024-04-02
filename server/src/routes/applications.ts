@@ -10,4 +10,16 @@ applicationsRouter.post(
   applications.addApplication
 );
 
+applicationsRouter.put(
+  "/update_application",
+  authenticateToken,
+  applications.updateApplication
+);
+
+applicationsRouter.delete(
+  "/delete_application",
+  authenticateToken,
+  applications.deleteApplication
+);
+
 export default applicationsRouter;
