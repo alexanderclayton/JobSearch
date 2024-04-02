@@ -5,8 +5,11 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"tsc -w\" \"nodemon --ext ts,js,mjs,cjs,json dist/server.js\""
+    "dev": "concurrently \"npm run build:watch\" \"nodemon --ext ts,js,mjs,cjs,json dist/server.js\"",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
