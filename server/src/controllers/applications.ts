@@ -40,7 +40,9 @@ export const updateApplication = async (req: Request, res: Response) => {
       notes,
     } = req.body;
     if (!_id) {
-      res.status(400).json({ message: "No application with that _id found." });
+      return res
+        .status(400)
+        .json({ message: "No application with that _id found." });
     }
     const updateFields: Partial<IApplication> = {};
     if (applicationDate) updateFields.applicationDate = applicationDate;
@@ -80,6 +82,47 @@ export const deleteApplication = async (req: Request, res: Response) => {
       .json({ message: `Deleted application: ${_id}`, deletedApplication });
   } catch (error: unknown) {
     console.error("Error deleting application:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const getApplication = async (req: Request, res: Response) => {
+  try {
+    const applicationId = req.params.id;
+    const fetchedApplication = await Application.findById(applicationId).exec();
+    if (!fetchedApplication) {
+      res.status(400).json({ message: "No application with that _id found" });
+    }
+    res.status(200).json(fetchedApplication);
+  } catch (error: unknown) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      const errors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({ message: "Validation error:", errors });
+    }
+    console.error("Error fetching application:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const queryApplications = async (req: Request, res: Response) => {
+  try {
+    const { applications } = req.body;
+    if (!applications) {
+      return res
+        .status(400)
+        .json({ message: "Request must include an array of job _id(s)" });
+    }
+    const fetchedApplications = await Application.find({
+      _id: { $in: applications },
+    }).exec();
+    if (!fetchedApplications) {
+      return res
+        .status(400)
+        .json({ message: "No applications found matching provided _id(s)" });
+    }
+    res.status(200).json(fetchedApplications)
+  } catch (error: unknown) {
+    console.error("Error fetching applications:", error);
     res.status(500).json({ message: "Internal server error." });
   }
 };

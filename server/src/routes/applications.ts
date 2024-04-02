@@ -22,4 +22,7 @@ applicationsRouter.delete(
   applications.deleteApplication
 );
 
+applicationsRouter.get("/:id", authenticateToken, applications.getApplication);
+applicationsRouter.get("/", authenticateToken, applications.queryApplications);
+
 export default applicationsRouter;
