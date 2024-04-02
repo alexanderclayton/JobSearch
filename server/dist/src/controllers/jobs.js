@@ -2,16 +2,13 @@ import mongoose from "mongoose";
 import { Job } from "../models/index.js";
 export const addJob = async (req, res) => {
     try {
-        const token = req.user;
         const { title, company, ...optionalFields } = req.body;
         if (!title || !company) {
             return res
                 .status(400)
                 .json({ message: "New job must include a title and company" });
         }
-        const userId = token._id;
         const newJob = new Job({
-            user: userId,
             title,
             company,
             ...optionalFields,

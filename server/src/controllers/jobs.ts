@@ -1,20 +1,17 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { Job } from "../models/index.js";
-import { IJob, IRequest, IUser } from "../types/index.js";
+import { IJob, IRequest } from "../types/index.js";
 
 export const addJob = async (req: IRequest, res: Response) => {
   try {
-    const token = req.user as IUser;
     const { title, company, ...optionalFields } = req.body;
     if (!title || !company) {
       return res
         .status(400)
         .json({ message: "New job must include a title and company" });
     }
-    const userId = token._id;
     const newJob = new Job<IJob>({
-      user: userId,
       title,
       company,
       ...optionalFields,

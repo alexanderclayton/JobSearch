@@ -65,7 +65,7 @@ export const updateApplication = async (req, res) => {
 export const deleteApplication = async (req, res) => {
     try {
         const { _id } = req.body;
-        const deletedApplication = await Application.deleteOne({ _id: _id });
+        const deletedApplication = await Application.findOneAndDelete({ _id: _id });
         res
             .status(200)
             .json({ message: `Deleted application: ${_id}`, deletedApplication });

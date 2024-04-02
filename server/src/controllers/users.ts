@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 import { User } from "../models/index.js";
 import { IRequest, IUser } from "../types/index.js";
 
@@ -32,14 +32,13 @@ export const updateUser = async (req: IRequest, res: Response) => {
   try {
     const token = req.user as IUser;
     const userId = token._id;
-    const { name, email, password, applicationId } = req.body;
-    const updateFields: Partial<IUser> & {
-      $push?: { applications: Types.ObjectId };
-    } = {};
+    const { name, email, password, jobs, applications } = req.body;
+    const updateFields: Partial<IUser> = {};
     if (name) updateFields.name = name;
     if (email) updateFields.email = email;
     if (password) updateFields.password = password;
-    if (applicationId) updateFields.$push = { applications: applicationId };
+    if (jobs) updateFields.jobs = jobs;
+    if (applications) updateFields.applications = applications;
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
       updateFields,

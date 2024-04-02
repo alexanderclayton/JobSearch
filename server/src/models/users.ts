@@ -15,6 +15,11 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
+  jobs: {
+    type: [Schema.Types.ObjectId],
+    ref: "Job",
+    default: [],
+  },
   applications: {
     type: [Schema.Types.ObjectId],
     ref: "Application",
