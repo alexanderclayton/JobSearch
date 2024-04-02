@@ -29,7 +29,7 @@ export const updateUser = async (req, res) => {
     try {
         const token = req.user;
         const userId = token._id;
-        const { name, email, password, applicationId } = req.body;
+        const { name, email, password, jobs, applications } = req.body;
         const updateFields = {};
         if (name)
             updateFields.name = name;
@@ -37,8 +37,10 @@ export const updateUser = async (req, res) => {
             updateFields.email = email;
         if (password)
             updateFields.password = password;
-        if (applicationId)
-            updateFields.$push = { applications: applicationId };
+        if (jobs)
+            updateFields.jobs = jobs;
+        if (applications)
+            updateFields.applications = applications;
         const updatedUser = await User.findOneAndUpdate({ _id: userId }, updateFields, { new: true, runValidators: true });
         if (!updatedUser) {
             return res.status(400).json({ message: "Unable to update user" });

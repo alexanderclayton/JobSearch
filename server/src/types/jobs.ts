@@ -41,7 +41,6 @@ export enum ELocation {
 }
 
 export interface IJob extends Document {
-  user: Types.ObjectId;
   title: string;
   company: TCompany;
   compensation: TCompensation;
