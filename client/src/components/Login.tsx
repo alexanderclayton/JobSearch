@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { TUser } from "../types";
+import { TLoginCredentials } from "../types";
+import { useAuth } from "../context";
 
 export const Login = () => {
-  const [credentials, setCredentials] = useState<Partial<TUser>>({
+  const { login } = useAuth();
+  const [credentials, setCredentials] = useState<TLoginCredentials>({
     email: "",
     password: "",
   });
 
-  const handleSubmit = () => {
-    console.log("hello world");
+  const handleSubmit = (
+    e: React.FormEvent,
+    email: string,
+    password: string,
+  ) => {
+    e.preventDefault();
+    login(email, password);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +27,10 @@ export const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-start">
+    <form
+      onSubmit={(e) => handleSubmit(e, credentials.email, credentials.password)}
+      className="flex flex-col items-start"
+    >
       <legend>Login</legend>
       <label htmlFor="email">Email:</label>
       <input
