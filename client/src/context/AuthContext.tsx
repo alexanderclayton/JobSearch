@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect, useMemo, useContext } from "react";
 import { TUser } from "../types";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 type TAuthContext = {
   token: string | null;
@@ -25,6 +26,7 @@ const AuthContext = createContext<TAuthContext>({
 });
 
 export const AuthProvider = ({ children }: IAuthProviderProps) => {
+  const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
@@ -32,6 +34,17 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
   const updateToken = (newToken: string | null) => {
     setToken(newToken);
+  };
+
+  const decodeUser = (decodedToken: TUser) => {
+    setUser({
+      _id: decodedToken._id,
+      name: decodedToken.name,
+      email: decodedToken.email,
+      password: decodedToken.password,
+      jobs: decodedToken.jobs,
+      applications: decodedToken.applications,
+    });
   };
 
   const login = async (email: string, password: string) => {
@@ -56,15 +69,8 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         updateToken(access_token);
         console.log("successful login:", access_token);
         const decodedToken = jwtDecode(access_token) as TUser;
-        const decodedUser: TUser = {
-          _id: decodedToken._id,
-          name: decodedToken.name,
-          email: decodedToken.email,
-          password: decodedToken.password,
-          jobs: decodedToken.jobs,
-          applications: decodedToken.applications,
-        };
-        setUser(decodedUser);
+        decodeUser(decodedToken);
+        navigate("/user");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -82,7 +88,8 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
-      const decodedToken = jwtDecode(token);
+      const decodedToken = jwtDecode(token) as TUser;
+      decodeUser(decodedToken);
       const expirationTime = (decodedToken.exp as number) * 1000;
       const currentTime = Date.now();
       if (expirationTime < currentTime) {
@@ -102,7 +109,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
       login,
       logout,
     }),
-    [token],
+    [token, user],
   );
 
   return (
