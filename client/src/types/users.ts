@@ -5,4 +5,14 @@ export type TUser = {
   password: string | undefined;
   jobs?: string[] | undefined;
   applications?: string[] | undefined;
+  iss?: number
+  exp?: number
+  __v?: number
 };
+
+export enum ETab {
+  Main = "main",
+  Profile = "profile",
+  Jobs = "jobs",
+  Apps = "apps"
+}

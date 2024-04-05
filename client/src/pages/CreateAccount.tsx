@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { TUser } from "../types";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context";
 
 export const CreateAccount = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [user, setUser] = useState<TUser>({
     name: "",
@@ -42,6 +44,7 @@ export const CreateAccount = () => {
       const responseData = await response.json();
       console.log("Successfully added user:", responseData);
       resetUser();
+      login(user.email as string, user.password as string);
     } catch (error: unknown) {
       console.error("Error adding user:", error);
     }

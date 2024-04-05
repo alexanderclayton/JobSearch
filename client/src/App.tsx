@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CreateAccount, Home, Login } from "./pages";
+import { Application, CreateAccount, Home, Job, Login, User } from "./pages";
 import { AuthProvider, ProtectedRoute } from "./context";
-import { AddUser } from "./components";
 
 function App() {
   return (
@@ -13,7 +12,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/create_account" element={<CreateAccount />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/add_user" element={<AddUser />} />
+              <Route path="/user" element={<User />} />
+              <Route path="/job/:id" element={<Job />} />
+              <Route path="/application/:id" element={<Application />} />
             </Route>
           </Routes>
         </AuthProvider>

@@ -23,6 +23,6 @@ applicationsRouter.delete(
 );
 
 applicationsRouter.get("/:id", authenticateToken, applications.getApplication);
-applicationsRouter.get("/", authenticateToken, applications.queryApplications);
+applicationsRouter.post("/", authenticateToken, applications.queryApplications);
 
 export default applicationsRouter;

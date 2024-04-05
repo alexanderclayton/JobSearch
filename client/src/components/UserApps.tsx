@@ -1,0 +1,71 @@
+import { useEffect, useState } from "react";
+import { TApplication, TUser } from "../types";
+import { useAuth } from "../context";
+import { useNavigate } from "react-router-dom";
+
+interface IUserAppsProps {
+  user: TUser;
+}
+export const UserApps = ({ user }: IUserAppsProps) => {
+  const { token } = useAuth();
+  const navigate = useNavigate();
+  const [applications, setApplications] = useState<TApplication[]>([]);
+
+  const getApplications = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/applications", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          applications: user.applications,
+        }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error fetching applications:, ${errorData.message}`);
+      } else {
+        const data = await response.json();
+        setApplications(data);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error fetching applications:", error.message);
+      } else {
+        console.error("Error fetching applications:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getApplications();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
+      {applications.length === 0 ? (
+        <div>No applications submitted</div>
+      ) : (
+        <>
+          {applications.map((application) => (
+            <div
+              key={application._id}
+              className="cursor-pointer rounded-lg bg-white p-4 shadow-md"
+              onClick={() => navigate(`/application/${application._id}`)}
+            >
+              <h3 className="mb-2 text-lg font-semibold">
+                Job ID: {application.job}
+              </h3>
+              <p className="text-gray-600">
+                Application Date: {application.applicationDate.toString()}
+              </p>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+};
