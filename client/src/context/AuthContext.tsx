@@ -1,7 +1,11 @@
 import { useState, createContext, useEffect, useMemo, useContext } from "react";
+import { TUser } from "../types";
+import { jwtDecode } from "jwt-decode";
 
 type TAuthContext = {
   token: string | null;
+  user: TUser | null;
+  setUser: React.Dispatch<React.SetStateAction<TUser | null>>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 };
@@ -12,6 +16,8 @@ interface IAuthProviderProps {
 
 const AuthContext = createContext<TAuthContext>({
   token: null,
+  user: null,
+  setUser: () => {},
   login: async () => {},
   logout: () => {},
 });
@@ -20,6 +26,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   const [token, setToken_] = useState<string | null>(
     localStorage.getItem("token"),
   );
+  const [user, setUser] = useState<TUser | null>(null);
 
   const setToken = (newToken: string | null) => {
     setToken_(newToken);
@@ -46,6 +53,16 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         const { access_token } = data;
         setToken(access_token);
         console.log("successful login:", access_token);
+        const decodedToken = jwtDecode(access_token) as TUser;
+        const decodedUser: TUser = {
+          _id: decodedToken._id,
+          name: decodedToken.name,
+          email: decodedToken.email,
+          password: decodedToken.password,
+          jobs: decodedToken.jobs,
+          applications: decodedToken.applications,
+        };
+        setUser(decodedUser);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -71,6 +88,8 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   const contextValue = useMemo(
     () => ({
       token,
+      user,
+      setUser,
       login,
       logout,
     }),
