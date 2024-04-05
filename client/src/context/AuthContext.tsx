@@ -6,6 +6,7 @@ type TAuthContext = {
   token: string | null;
   user: TUser | null;
   setUser: React.Dispatch<React.SetStateAction<TUser | null>>;
+  updateToken: (newToken: string | null) => void;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 };
@@ -18,18 +19,19 @@ const AuthContext = createContext<TAuthContext>({
   token: null,
   user: null,
   setUser: () => {},
+  updateToken: () => {},
   login: async () => {},
   logout: () => {},
 });
 
 export const AuthProvider = ({ children }: IAuthProviderProps) => {
-  const [token, setToken_] = useState<string | null>(
+  const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
   const [user, setUser] = useState<TUser | null>(null);
 
-  const setToken = (newToken: string | null) => {
-    setToken_(newToken);
+  const updateToken = (newToken: string | null) => {
+    setToken(newToken);
   };
 
   const login = async (email: string, password: string) => {
@@ -51,7 +53,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
       } else {
         const data = await response.json();
         const { access_token } = data;
-        setToken(access_token);
+        updateToken(access_token);
         console.log("successful login:", access_token);
         const decodedToken = jwtDecode(access_token) as TUser;
         const decodedUser: TUser = {
@@ -74,12 +76,18 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setToken(null);
+    updateToken(null);
   };
 
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
+      const decodedToken = jwtDecode(token);
+      const expirationTime = (decodedToken.exp as number) * 1000;
+      const currentTime = Date.now();
+      if (expirationTime < currentTime) {
+        logout();
+      }
     } else {
       localStorage.removeItem("token");
     }
@@ -90,6 +98,7 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
       token,
       user,
       setUser,
+      updateToken,
       login,
       logout,
     }),
