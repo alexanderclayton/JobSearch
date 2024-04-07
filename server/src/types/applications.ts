@@ -22,7 +22,8 @@ export type TFollowUp = {
 };
 
 export interface IApplication extends Document {
-  job: Types.ObjectId;
+  userId: Types.ObjectId;
+  jobId: Types.ObjectId;
   applicationDate: Date;
   resume: File | null;
   coverLetter: File | null;

@@ -37,8 +37,6 @@ export const updateUser = async (req: IRequest, res: Response) => {
     if (name) updateFields.name = name;
     if (email) updateFields.email = email;
     if (password) updateFields.password = password;
-    if (jobs) updateFields.jobs = jobs;
-    if (applications) updateFields.applications = applications;
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
       updateFields,

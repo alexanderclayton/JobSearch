@@ -2,17 +2,22 @@ import { Request, Response, application } from "express";
 import mongoose from "mongoose";
 import { Application } from "../models/index.js";
 import { IApplication } from "../types/applications.js";
+import { IUser } from "../types/users.js";
+import { IRequest } from "../types/auth.js";
 
-export const addApplication = async (req: Request, res: Response) => {
+export const addApplication = async (req: IRequest, res: Response) => {
   try {
-    const { job, applicationDate, ...optionalFields } = req.body;
-    if (!job || !applicationDate) {
+    const token = req.user as IUser;
+    const userId = token._id;
+    const { jobId, applicationDate, ...optionalFields } = req.body;
+    if (!jobId || !applicationDate) {
       return res.status(400).json({
         message: "New application must include job and application date",
       });
     }
     const newApplication = new Application<IApplication>({
-      job,
+      userId,
+      jobId,
       applicationDate,
       ...optionalFields,
     });
@@ -104,25 +109,25 @@ export const getApplication = async (req: Request, res: Response) => {
   }
 };
 
-export const queryApplications = async (req: Request, res: Response) => {
-  try {
-    const { applications } = req.body;
-    if (!applications) {
-      return res
-        .status(400)
-        .json({ message: "Request must include an array of job _id(s)" });
-    }
-    const fetchedApplications = await Application.find({
-      _id: { $in: applications },
-    }).exec();
-    if (!fetchedApplications) {
-      return res
-        .status(400)
-        .json({ message: "No applications found matching provided _id(s)" });
-    }
-    res.status(200).json(fetchedApplications)
-  } catch (error: unknown) {
-    console.error("Error fetching applications:", error);
-    res.status(500).json({ message: "Internal server error." });
-  }
-};
+// export const queryApplications = async (req: Request, res: Response) => {
+//   try {
+//     const { applications } = req.body;
+//     if (!applications) {
+//       return res
+//         .status(400)
+//         .json({ message: "Request must include an array of job _id(s)" });
+//     }
+//     const fetchedApplications = await Application.find({
+//       _id: { $in: applications },
+//     }).exec();
+//     if (!fetchedApplications) {
+//       return res
+//         .status(400)
+//         .json({ message: "No applications found matching provided _id(s)" });
+//     }
+//     res.status(200).json(fetchedApplications)
+//   } catch (error: unknown) {
+//     console.error("Error fetching applications:", error);
+//     res.status(500).json({ message: "Internal server error." });
+//   }
+// };
