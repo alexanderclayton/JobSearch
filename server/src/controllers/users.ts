@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { User } from "../models/index.js";
 import { IRequest, IUser } from "../types/index.js";
+import { generateToken } from "../utils/auth.js";
 
 export const addUser = async (req: Request, res: Response) => {
   try {
@@ -32,7 +33,7 @@ export const updateUser = async (req: IRequest, res: Response) => {
   try {
     const token = req.user as IUser;
     const userId = token._id;
-    const { name, email, password, jobs, applications } = req.body;
+    const { name, email, password } = req.body;
     const updateFields: Partial<IUser> = {};
     if (name) updateFields.name = name;
     if (email) updateFields.email = email;
@@ -45,7 +46,8 @@ export const updateUser = async (req: IRequest, res: Response) => {
     if (!updatedUser) {
       return res.status(400).json({ message: "Unable to update user" });
     }
-    res.status(200).json(updatedUser);
+    const access_token = generateToken(updatedUser);
+    res.status(200).json({ access_token });
   } catch (error: unknown) {
     if (error instanceof mongoose.Error.ValidationError) {
       const errors = Object.values(error.errors).map((err) => err.message);

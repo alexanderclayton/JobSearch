@@ -92,19 +92,19 @@ export const getJob = async (req: Request, res: Response) => {
   }
 };
 
-export const queryJobs = async (req: Request, res: Response) => {
+export const queryJobs = async (req: IRequest, res: Response) => {
   try {
-    const { jobs } = req.body;
-    if (!jobs) {
+    const token = req.user as IUser;
+    if (!token) {
       return res
         .status(400)
-        .json({ message: "Request must include an array of job _id(s)" });
+        .json({ message: "Must have an authorized user token" });
     }
-    const fetchedJobs = await Job.find({ _id: { $in: jobs } }).exec();
+    const fetchedJobs = await Job.find({ userId: token._id }).exec();
     if (!fetchedJobs) {
       return res
         .status(400)
-        .json({ message: "No jobs found matching provided _id(s)" });
+        .json({ message: "No jobs found with that user._id" });
     }
     res.status(200).json(fetchedJobs);
   } catch (error: unknown) {

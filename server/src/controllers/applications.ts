@@ -109,25 +109,25 @@ export const getApplication = async (req: Request, res: Response) => {
   }
 };
 
-// export const queryApplications = async (req: Request, res: Response) => {
-//   try {
-//     const { applications } = req.body;
-//     if (!applications) {
-//       return res
-//         .status(400)
-//         .json({ message: "Request must include an array of job _id(s)" });
-//     }
-//     const fetchedApplications = await Application.find({
-//       _id: { $in: applications },
-//     }).exec();
-//     if (!fetchedApplications) {
-//       return res
-//         .status(400)
-//         .json({ message: "No applications found matching provided _id(s)" });
-//     }
-//     res.status(200).json(fetchedApplications)
-//   } catch (error: unknown) {
-//     console.error("Error fetching applications:", error);
-//     res.status(500).json({ message: "Internal server error." });
-//   }
-// };
+export const queryApplications = async (req: IRequest, res: Response) => {
+  try {
+    const token = req.user as IUser;
+    if (!token) {
+      return res
+        .status(400)
+        .json({ message: "Must have an authorized user token" });
+    }
+    const fetchedApplications = await Application.find({
+      userId: token._id,
+    }).exec();
+    if (!fetchedApplications) {
+      return res
+        .status(400)
+        .json({ message: "No applications found with that user._id" });
+    }
+    res.status(200).json(fetchedApplications);
+  } catch (error: unknown) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
