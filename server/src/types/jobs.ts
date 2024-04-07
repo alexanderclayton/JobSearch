@@ -1,4 +1,4 @@
-import { Types, Document } from "mongoose";
+import { Types, Document, ObjectId } from "mongoose";
 
 export type TAddress = {
   street: string;
@@ -41,6 +41,7 @@ export enum ELocation {
 }
 
 export interface IJob extends Document {
+  userId: Types.ObjectId;
   title: string;
   company: TCompany;
   compensation: TCompensation;

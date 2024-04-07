@@ -77,6 +77,10 @@ const techSchema = new Schema<TTech>({
 });
 
 const jobSchema = new Schema<IJob>({
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
   title: {
     type: String,
     required: true,

@@ -1,5 +1,10 @@
 import mongoose, { Schema } from "mongoose";
-import { EFollowUpMethod, IApplication, TFeedback, TFollowUp } from "../types/index.js";
+import {
+  EFollowUpMethod,
+  IApplication,
+  TFeedback,
+  TFollowUp,
+} from "../types/index.js";
 
 const feedbackSchema = new Schema<TFeedback>({
   feedback: Boolean,
@@ -29,7 +34,11 @@ const followUpSchema = new Schema<TFollowUp>({
 });
 
 const applicationSchema = new Schema<IApplication>({
-  job: {
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  jobId: {
     type: Schema.Types.ObjectId,
     ref: "Job",
     required: true,
