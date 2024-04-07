@@ -8,6 +8,6 @@ jobsRouter.post("/add_job", authenticateToken, jobs.addJob);
 jobsRouter.put("/update_job", authenticateToken, jobs.updateJob);
 jobsRouter.delete("/delete_job", authenticateToken, jobs.deleteJob);
 jobsRouter.get("/:id", authenticateToken, jobs.getJob);
-jobsRouter.post("/", authenticateToken, jobs.queryJobs);
+jobsRouter.get("/", authenticateToken, jobs.queryJobs);
 
 export default jobsRouter;
