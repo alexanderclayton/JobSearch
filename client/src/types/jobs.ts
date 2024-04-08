@@ -1,6 +1,6 @@
 export type TJob = {
   _id?: string | undefined;
-  userId: string;
+  userId: string | undefined;
   title: string;
   company: TCompany;
   compensation: TCompensation;

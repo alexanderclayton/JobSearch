@@ -94,6 +94,13 @@ export const UserApps = () => {
           ))}
         </>
       )}
+      <div
+        className="flex cursor-pointer flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md"
+        onClick={() => console.log("add job")}
+      >
+        <span className="mb-2 text-xl text-gray-500">+</span>
+        <span className="text-gray-600">Add Application</span>
+      </div>
     </div>
   );
 };

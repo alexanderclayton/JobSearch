@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TJob } from "../types";
 import { useAuth } from "../context";
 
 export const Job = () => {
   const params = useParams();
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [job, setJob] = useState<TJob | null>(null);
 
   const getJob = async () => {
@@ -34,6 +35,47 @@ export const Job = () => {
       } else {
         console.error("Error fetching job:", error);
       }
+    }
+  };
+
+  const deleteJob = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:5000/api/jobs/delete_job",
+        {
+          method: "DELETE",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({
+            _id: params.id,
+          }),
+        },
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error deleting job: ${errorData.message}`);
+      } else {
+        const data = await response.json();
+        console.log("DeletedJob", data);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error fetching job:", error.message);
+      } else {
+        console.error("Error fetching job:", error);
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteJob();
+      navigate("/user");
+    } catch (error: unknown) {
+      console.error(error);
     }
   };
 
@@ -88,6 +130,9 @@ export const Job = () => {
             State: {job.company.address.state}
           </p>
           <p className="mb-4 text-gray-600">Zip: {job.company.address.zip}</p>
+          <button onClick={handleDelete} className="text-red-500">
+            Delete
+          </button>
         </div>
       )}
     </div>
