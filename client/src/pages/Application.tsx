@@ -50,7 +50,7 @@ export const Application = () => {
         <div>Loading...</div>
       ) : (
         <div className="mx-auto max-w-3xl">
-          <h1 className="mb-4 text-3xl font-bold">{application.job}</h1>
+          <h1 className="mb-4 text-3xl font-bold">{application.jobId}</h1>
           <p className="mb-4 text-gray-600">
             Application Date: {application.applicationDate.toString()}
           </p>

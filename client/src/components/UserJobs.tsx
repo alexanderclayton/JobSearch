@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import { TJob, TUser } from "../types";
+import { TJob } from "../types";
 import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
 
-interface IUserJobsProps {
-  user: TUser;
-}
-
-export const UserJobs = ({ user }: IUserJobsProps) => {
+export const UserJobs = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<TJob[]>([]);
@@ -15,15 +11,12 @@ export const UserJobs = ({ user }: IUserJobsProps) => {
   const getJobs = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5000/api/jobs", {
-        method: "POST",
+        method: "GET",
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         },
-        body: JSON.stringify({
-          jobs: user.jobs,
-        }),
       });
       if (!response.ok) {
         const errorData = await response.json();

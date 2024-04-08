@@ -29,8 +29,8 @@ export const User = () => {
 
         {tab === ETab.Main && <UserMain user={user} setTab={setTab} />}
         {tab === ETab.Profile && <UserProfile />}
-        {tab === ETab.Jobs && <UserJobs user={user} />}
-        {tab === ETab.Apps && <UserApps user={user} />}
+        {tab === ETab.Jobs && <UserJobs />}
+        {tab === ETab.Apps && <UserApps />}
       </>
     );
   } else {

@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { TApplication, TUser } from "../types";
+import { TApplication } from "../types";
 import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
 
-interface IUserAppsProps {
-  user: TUser;
-}
-export const UserApps = ({ user }: IUserAppsProps) => {
+export const UserApps = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<TApplication[]>([]);
@@ -14,15 +11,12 @@ export const UserApps = ({ user }: IUserAppsProps) => {
   const getApplications = async () => {
     try {
       const response = await fetch("http://127.0.0.1:5000/api/applications", {
-        method: "POST",
+        method: "GET",
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
         },
-        body: JSON.stringify({
-          applications: user.applications,
-        }),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -44,6 +38,40 @@ export const UserApps = ({ user }: IUserAppsProps) => {
     getApplications();
   }, []);
 
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const formatDate = (dateString: string) => {
+    const dateObject = new Date(dateString);
+    const weekday = weekdays[dateObject.getDay()];
+    const month = months[dateObject.getMonth()];
+    const date = dateObject.getDate().toString();
+    const year = dateObject.getFullYear().toString();
+    return `${weekday}, ${month} ${date}, ${year}`;
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
       {applications.length === 0 ? (
@@ -57,10 +85,10 @@ export const UserApps = ({ user }: IUserAppsProps) => {
               onClick={() => navigate(`/application/${application._id}`)}
             >
               <h3 className="mb-2 text-lg font-semibold">
-                Job ID: {application.job}
+                Job ID: {application.jobId}
               </h3>
               <p className="text-gray-600">
-                Application Date: {application.applicationDate.toString()}
+                Application Date: {formatDate(application.applicationDate)}
               </p>
             </div>
           ))}

@@ -1,7 +1,8 @@
 export type TApplication = {
   _id?: string | undefined;
-  job: string;
-  applicationDate: Date;
+  userId: string;
+  jobId: string;
+  applicationDate: string;
   resume: File | null;
   coverLetter: File | null;
   feedback: TFeedback[];
