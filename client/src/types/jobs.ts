@@ -1,5 +1,6 @@
 export type TJob = {
   _id?: string | undefined;
+  userId: string;
   title: string;
   company: TCompany;
   compensation: TCompensation;
