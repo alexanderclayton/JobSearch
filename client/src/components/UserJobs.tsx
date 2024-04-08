@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { TJob } from "../types";
 import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
+import { AddJob } from "./AddJob";
 
 export const UserJobs = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<TJob[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getJobs = async () => {
     try {
@@ -36,7 +38,7 @@ export const UserJobs = () => {
 
   useEffect(() => {
     getJobs();
-  }, []);
+  }, [showModal]);
 
   return (
     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
@@ -51,6 +53,14 @@ export const UserJobs = () => {
           <p className="text-gray-600">Location: {job.location}</p>
         </div>
       ))}
+      <div
+        className="flex cursor-pointer flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md"
+        onClick={() => setShowModal(true)}
+      >
+        <span className="mb-2 text-xl text-gray-500">+</span>
+        <span className="text-gray-600">Add Job</span>
+      </div>
+      {showModal && <AddJob setShowModal={setShowModal} />}
     </div>
   );
 };
