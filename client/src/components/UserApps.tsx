@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { TApplication } from "../types";
 import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
+import { AddApp } from "./AddApp";
 
 export const UserApps = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<TApplication[]>([]);
+  const [showModal, setShowModal] = useState(false)
 
   const getApplications = async () => {
     try {
@@ -96,11 +98,12 @@ export const UserApps = () => {
       )}
       <div
         className="flex cursor-pointer flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md"
-        onClick={() => console.log("add job")}
+        onClick={() => setShowModal(true)}
       >
         <span className="mb-2 text-xl text-gray-500">+</span>
         <span className="text-gray-600">Add Application</span>
       </div>
+      {showModal && <AddApp jobId="6612b51267b77a15c207d3e7" setShowModal={setShowModal} />}
     </div>
   );
 };
