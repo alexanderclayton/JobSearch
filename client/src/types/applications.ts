@@ -1,6 +1,6 @@
 export type TApplication = {
   _id?: string | undefined;
-  userId: string;
+  userId: string | undefined;
   jobId: string;
   applicationDate: string;
   resume: File | null;
@@ -13,7 +13,7 @@ export type TApplication = {
 
 export type TFeedback = {
   feedback: boolean;
-  date: Date;
+  date: string;
   repName: string;
   repRole: string;
   interview: boolean;
@@ -24,10 +24,11 @@ export enum EFollowUpMethod {
   Email = "email",
   Phone = "phone",
   LinkedIn = "linkedin",
+  None = "none",
 }
 
 export type TFollowUp = {
-  date: Date;
+  date: string;
   method: EFollowUpMethod;
   message: string;
 };

@@ -13,6 +13,7 @@ export enum EFollowUpMethod {
   Email = "email",
   Phone = "phone",
   LinkedIn = "linkedin",
+  None = "none",
 }
 
 export type TFollowUp = {
