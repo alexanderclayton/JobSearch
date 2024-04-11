@@ -38,7 +38,7 @@ export const UserApps = () => {
 
   useEffect(() => {
     getApplications();
-  }, []);
+  }, [showModal]);
 
   const weekdays = [
     "Sunday",
@@ -103,9 +103,7 @@ export const UserApps = () => {
         <span className="mb-2 text-xl text-gray-500">+</span>
         <span className="text-gray-600">Add Application</span>
       </div>
-      {showModal && (
-        <AddApp jobId="6612b51267b77a15c207d3e7" setShowModal={setShowModal} />
-      )}
+      {showModal && <AddApp setShowModal={setShowModal} />}
     </div>
   );
 };
