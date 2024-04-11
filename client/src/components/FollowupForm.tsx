@@ -54,19 +54,23 @@ export const FollowUpForm = ({
       <h2 className="mb-4 font-semibold">Follow-Up</h2>
       <div className="-mx-4 flex w-full flex-wrap">
         <div className="mb-4 w-full px-4 md:w-1/2">
-          <label htmlFor="date">Date</label>
+          <label htmlFor="date" className="mb-1 block font-medium">
+            Date
+          </label>
           <input
             type="date"
             id="date"
-            className=""
+            className="h-10 w-full rounded-md border border-gray-300 px-3 py-2"
             onChange={handleFollowUpChange}
           />
         </div>
         <div className="mb-4 w-full px-4 md:w-1/2">
-          <label htmlFor="method">method</label>
+          <label htmlFor="method" className="mb-1 block font-medium">
+            Method
+          </label>
           <select
             id="method"
-            className="mt-1 block h-10 w-full rounded-md px-3 py-2 hover:cursor-pointer"
+            className="mt-1 block h-10 w-full rounded-md border border-gray-300 px-3 py-2 hover:cursor-pointer"
             value={followUp.method}
             onChange={handleFollowUpChange}
           >
@@ -78,19 +82,24 @@ export const FollowUpForm = ({
           </select>
         </div>
         <div className="mb-4 flex w-full flex-col items-start px-4 md:w-1/2">
-          <label htmlFor="message">Message</label>
+          <label htmlFor="message" className="mb-1 block font-medium">
+            Message
+          </label>
           <textarea
             name="message"
             id="message"
             cols={30}
             rows={10}
+            className="h-32 w-full rounded-md border border-gray-300 px-3 py-2"
             onChange={handleFollowUpChange}
           ></textarea>
         </div>
       </div>
-      <button onClick={handleAddFollowUp}>+</button>
+      <button className="btn-submit" onClick={handleAddFollowUp}>
+        Add Follow-Up
+      </button>
       {application.followUp.map((followup, idx) => (
-        <div key={idx} className="flex w-full justify-between">
+        <div key={idx} className="flex w-full items-center justify-between">
           <p>{followup.date}</p>
           <p>{followup.method}</p>
           <p>{followup.message}</p>

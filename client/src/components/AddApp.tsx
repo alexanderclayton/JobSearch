@@ -36,8 +36,8 @@ export const AddApp = ({ jobId, setShowModal }: IAddAppProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-      <div className="mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-lg">
+    <div className="fixed inset-0 flex items-start justify-center overflow-y-auto bg-gray-800 bg-opacity-75">
+      <div className="m-8 max-w-4xl rounded-lg bg-white p-8 shadow-lg">
         <h2 className="mb-6 text-center text-2xl font-semibold">
           Add Application
         </h2>

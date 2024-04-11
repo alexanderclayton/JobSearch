@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TJob } from "../types";
 import { useAuth } from "../context";
+import { DeleteModal } from "../components";
 
 export const Job = () => {
   const params = useParams();
   const { token } = useAuth();
   const navigate = useNavigate();
   const [job, setJob] = useState<TJob | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const getJob = async () => {
     try {
@@ -63,9 +65,9 @@ export const Job = () => {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error("Error fetching job:", error.message);
+        console.error("Error deleting job:", error.message);
       } else {
-        console.error("Error fetching job:", error);
+        console.error("Error deleting job:", error);
       }
     }
   };
@@ -77,6 +79,11 @@ export const Job = () => {
     } catch (error: unknown) {
       console.error(error);
     }
+  };
+
+  const handleDeleteModal = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setShowModal(!showModal);
   };
 
   useEffect(() => {
@@ -130,10 +137,18 @@ export const Job = () => {
             State: {job.company.address.state}
           </p>
           <p className="mb-4 text-gray-600">Zip: {job.company.address.zip}</p>
-          <button onClick={handleDelete} className="text-red-500">
+          <button onClick={handleDeleteModal} className="text-red-500">
             Delete
           </button>
         </div>
+      )}
+      {showModal && (
+        <DeleteModal
+          deleteId={params.id}
+          deleteType="job"
+          deleteFunction={handleDelete}
+          handleDeleteModal={handleDeleteModal}
+        />
       )}
     </div>
   );

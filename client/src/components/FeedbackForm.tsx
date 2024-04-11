@@ -77,7 +77,7 @@ export const FeedbackForm = ({
           <input
             type="date"
             id="date"
-            className=""
+            className="h-10 w-full rounded-md border border-gray-300 px-3 py-2"
             onChange={handleFeedbackChange}
           />
         </div>
@@ -88,7 +88,7 @@ export const FeedbackForm = ({
           <input
             type="text"
             id="repName"
-            className="input-field"
+            className="h-10 w-full rounded-md border border-gray-300 px-3 py-2"
             value={feedback.repName}
             onChange={handleFeedbackChange}
           />
@@ -100,7 +100,7 @@ export const FeedbackForm = ({
           <input
             type="text"
             id="repRole"
-            className="input-field"
+            className="h-10 w-full rounded-md border border-gray-300 px-3 py-2"
             value={feedback.repRole}
             onChange={handleFeedbackChange}
           />
@@ -124,7 +124,7 @@ export const FeedbackForm = ({
           <input
             type="text"
             id="notes"
-            className="input-field flex-grow"
+            className="h-10 flex-grow rounded-md border border-gray-300 px-3 py-2"
             value={addedFeedbackNote}
             onChange={(e) => setAddedFeedbackNote(e.target.value)}
           />
@@ -133,7 +133,7 @@ export const FeedbackForm = ({
           </button>
         </div>
         {feedback.notes.map((note, idx) => (
-          <div key={idx} className="flex w-full justify-between">
+          <div key={idx} className="flex w-full items-center justify-between">
             <p>{note}</p>
             <button
               className="text-xs text-red-500"
