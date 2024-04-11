@@ -1,5 +1,6 @@
 export * from "./AddApp";
 export * from "./AddJob";
+export * from "./DeleteModal";
 export * from "./FeedbackForm";
 export * from "./FollowupForm";
 export * from "./UserApps";
