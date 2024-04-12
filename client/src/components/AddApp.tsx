@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TApplication, TJob } from "../types";
 import { useAuth } from "../context";
 import { FeedbackForm } from "./FeedbackForm";
 import { FollowUpForm } from "./FollowupForm";
 
 interface IAddAppProps {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  jobs: TJob[];
+  setApplicationModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AddApp = ({ setShowModal }: IAddAppProps) => {
+export const AddApp = ({ jobs, setApplicationModal }: IAddAppProps) => {
   const { token, user } = useAuth();
   const [addedApplication, setAddedApplication] = useState<TApplication>({
     userId: user?._id,
@@ -20,33 +21,6 @@ export const AddApp = ({ setShowModal }: IAddAppProps) => {
     followUp: [],
     notes: [],
   });
-  const [jobs, setJobs] = useState<TJob[] | null>(null);
-
-  const getJobs = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/api/jobs", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error fetching jobs: ${errorData.message}`);
-      } else {
-        const data = await response.json();
-        setJobs(data);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error fetching jobs:", error.message);
-      } else {
-        console.error("Error fetching jobs:", error);
-      }
-    }
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -91,15 +65,11 @@ export const AddApp = ({ setShowModal }: IAddAppProps) => {
     e.preventDefault();
     try {
       await addApplication(addedApplication);
-      setShowModal(false);
+      setApplicationModal(false);
     } catch (error: unknown) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    getJobs();
-  }, []);
 
   return (
     <div className="fixed inset-0 flex items-start justify-center overflow-y-auto bg-gray-800 bg-opacity-75">
@@ -122,7 +92,7 @@ export const AddApp = ({ setShowModal }: IAddAppProps) => {
               <option value="" disabled>
                 Select Job...
               </option>
-              {jobs?.map((job) => (
+              {jobs.map((job) => (
                 <option key={job._id} value={job._id}>
                   {job.title}, {job.company.name}
                 </option>
@@ -181,16 +151,9 @@ export const AddApp = ({ setShowModal }: IAddAppProps) => {
           />
           <div className="flex justify-end">
             <button className="btn-submit">Submit</button>
-            {/* <button
-              type="button"
-              onClick={() => setShowModal(false)}
-              className="btn-cancel ml-4"
-            >
-              Cancel
-            </button> */}
             <button
               type="button"
-              onClick={() => console.log(addedApplication)}
+              onClick={() => setApplicationModal(false)}
               className="btn-cancel ml-4"
             >
               Cancel

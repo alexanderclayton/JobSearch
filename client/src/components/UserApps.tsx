@@ -1,44 +1,21 @@
-import { useEffect, useState } from "react";
-import { TApplication } from "../types";
-import { useAuth } from "../context";
+import { TApplication, TJob } from "../types";
 import { useNavigate } from "react-router-dom";
 import { AddApp } from "./AddApp";
 
-export const UserApps = () => {
-  const { token } = useAuth();
+interface IUserAppsProps {
+  jobs: TJob[];
+  applications: TApplication[];
+  applicationModal: boolean;
+  setApplicationModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const UserApps = ({
+  jobs,
+  applications,
+  applicationModal,
+  setApplicationModal,
+}: IUserAppsProps) => {
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<TApplication[]>([]);
-  const [showModal, setShowModal] = useState(false);
-
-  const getApplications = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/api/applications", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error fetching applications:, ${errorData.message}`);
-      } else {
-        const data = await response.json();
-        setApplications(data);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error fetching applications:", error.message);
-      } else {
-        console.error("Error fetching applications:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getApplications();
-  }, [showModal]);
 
   const weekdays = [
     "Sunday",
@@ -74,6 +51,11 @@ export const UserApps = () => {
     return `${weekday}, ${month} ${date}, ${year}`;
   };
 
+  const getJobInfo = (application: TApplication) => {
+    const job = jobs.filter((job) => job._id === application.jobId);
+    return job;
+  };
+
   return (
     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
       {applications.length === 0 ? (
@@ -87,8 +69,11 @@ export const UserApps = () => {
               onClick={() => navigate(`/application/${application._id}`)}
             >
               <h3 className="mb-2 text-lg font-semibold">
-                Job ID: {application.jobId}
+                Job: {getJobInfo(application)[0].title}
               </h3>
+              <p className="text-gray-600">
+                Company: {getJobInfo(application)[0].company.name}
+              </p>
               <p className="text-gray-600">
                 Application Date: {formatDate(application.applicationDate)}
               </p>
@@ -98,12 +83,14 @@ export const UserApps = () => {
       )}
       <div
         className="flex cursor-pointer flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md"
-        onClick={() => setShowModal(true)}
+        onClick={() => setApplicationModal(true)}
       >
         <span className="mb-2 text-xl text-gray-500">+</span>
         <span className="text-gray-600">Add Application</span>
       </div>
-      {showModal && <AddApp setShowModal={setShowModal} />}
+      {applicationModal && (
+        <AddApp jobs={jobs} setApplicationModal={setApplicationModal} />
+      )}
     </div>
   );
 };
