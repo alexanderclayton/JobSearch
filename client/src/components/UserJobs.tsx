@@ -1,44 +1,15 @@
-import { useEffect, useState } from "react";
 import { TJob } from "../types";
-import { useAuth } from "../context";
 import { useNavigate } from "react-router-dom";
 import { AddJob } from "./AddJob";
 
-export const UserJobs = () => {
-  const { token } = useAuth();
+interface IUserJobsProps {
+  jobs: TJob[]
+  jobModal: boolean
+  setJobModal: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const UserJobs = ({ jobs, jobModal, setJobModal }: IUserJobsProps) => {
   const navigate = useNavigate();
-  const [jobs, setJobs] = useState<TJob[]>([]);
-  const [showModal, setShowModal] = useState(false);
-
-  const getJobs = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:5000/api/jobs", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error fetching jobs: ${errorData.message}`);
-      } else {
-        const data = await response.json();
-        setJobs(data);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error fetching jobs:", error.message);
-      } else {
-        console.error("Error fetching jobs:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getJobs();
-  }, [showModal]);
 
   return (
     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
@@ -55,12 +26,12 @@ export const UserJobs = () => {
       ))}
       <div
         className="flex cursor-pointer flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md"
-        onClick={() => setShowModal(true)}
+        onClick={() => setJobModal(true)}
       >
         <span className="mb-2 text-xl text-gray-500">+</span>
         <span className="text-gray-600">Add Job</span>
       </div>
-      {showModal && <AddJob setShowModal={setShowModal} />}
+      {jobModal && <AddJob setJobModal={setJobModal} />}
     </div>
   );
 };

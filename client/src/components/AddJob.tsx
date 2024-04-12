@@ -3,10 +3,10 @@ import { ELocation, ERate, TJob } from "../types";
 import { useAuth } from "../context";
 
 interface IAddJobProps {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setJobModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AddJob = ({ setShowModal }: IAddJobProps) => {
+export const AddJob = ({ setJobModal }: IAddJobProps) => {
   const { token, user } = useAuth();
   const [addedJob, setAddedJob] = useState<TJob>({
     userId: user?._id,
@@ -143,7 +143,7 @@ export const AddJob = ({ setShowModal }: IAddJobProps) => {
     e.preventDefault();
     try {
       await addJob(addedJob);
-      setShowModal(false);
+      setJobModal(false);
     } catch (error: unknown) {
       console.error(error);
     }
@@ -436,7 +436,7 @@ export const AddJob = ({ setShowModal }: IAddJobProps) => {
             </button>
             <button
               type="button"
-              onClick={() => setShowModal(false)}
+              onClick={() => setJobModal(false)}
               className="ml-4 rounded-lg bg-gray-300 px-6 py-2 text-gray-800 hover:bg-gray-400"
             >
               Cancel
